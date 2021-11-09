@@ -26,5 +26,27 @@ export class V7AppsyncDdbDsVtlS9Stack extends cdk.Stack {
         type: ddb.AttributeType.STRING,
       },
     });
+
+    // DynamoDB Table DataSource attached to AppSync API
+    const ddb_datasource = api.addDynamoDbDataSource("MyDynamoTable", table);
+
+    // Resolvers
+    ddb_datasource.createResolver({
+      typeName: "Mutation",
+      fieldName: "addProduct",
+      requestMappingTemplate: appsync.MappingTemplate.fromString(`
+        {
+          "version" : "2017-02-28",
+          "operation" : "PutItem",
+          "key" : {
+            "id" : $util.dynamodb.toDynamoDBJson($util.autoId())
+          },
+          "attributeValues" : $context.arguments
+        }
+      `),
+      responseMappingTemplate: appsync.MappingTemplate.fromString(`
+        $util.toJson($context.result)
+      `),
+    });
   }
 }
