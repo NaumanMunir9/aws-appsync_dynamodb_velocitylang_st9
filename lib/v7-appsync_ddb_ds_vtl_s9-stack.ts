@@ -25,6 +25,8 @@ export class V7AppsyncDdbDsVtlS9Stack extends cdk.Stack {
         name: "id",
         type: ddb.AttributeType.STRING,
       },
+      readCapacity: 1,
+      writeCapacity: 1,
     });
 
     // DynamoDB Table DataSource attached to AppSync API
