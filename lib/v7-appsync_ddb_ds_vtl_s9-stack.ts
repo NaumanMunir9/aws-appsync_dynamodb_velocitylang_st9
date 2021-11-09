@@ -33,6 +33,7 @@ export class V7AppsyncDdbDsVtlS9Stack extends cdk.Stack {
     const ddb_datasource = api.addDynamoDbDataSource("MyDynamoTable", table);
 
     // Resolvers
+    // Mutation => addProduct
     ddb_datasource.createResolver({
       typeName: "Mutation",
       fieldName: "addProduct",
@@ -47,7 +48,23 @@ export class V7AppsyncDdbDsVtlS9Stack extends cdk.Stack {
         }
       `),
       responseMappingTemplate: appsync.MappingTemplate.fromString(`
+        $util.qr($context.result.put("name", "$context.result.name $context.result.price"))
         $util.toJson($context.result)
+      `),
+    });
+
+    // Query => getProductList
+    ddb_datasource.createResolver({
+      typeName: "Query",
+      fieldName: "getProductList",
+      requestMappingTemplate: appsync.MappingTemplate.fromString(`
+        {
+          "version" : "2017-02-28",
+          "operation" : "Scan"
+        }
+      `),
+      responseMappingTemplate: appsync.MappingTemplate.fromString(`
+        $util.toJson($context.result.items)
       `),
     });
   }
