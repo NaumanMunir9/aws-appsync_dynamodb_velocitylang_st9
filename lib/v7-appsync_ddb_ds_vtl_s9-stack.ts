@@ -43,7 +43,7 @@ export class V7AppsyncDdbDsVtlS9Stack extends cdk.Stack {
           "key" : {
             "id" : $util.dynamodb.toDynamoDBJson($util.autoId())
           },
-          "attributeValues" : $context.arguments
+          "attributeValues" : $util.dynamodb.toMapValuesJson($context.arguments.product)
         }
       `),
       responseMappingTemplate: appsync.MappingTemplate.fromString(`
